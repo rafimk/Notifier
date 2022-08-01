@@ -6,7 +6,7 @@ using Membership.Shared.Deduplication;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddMessaging(c => c.AddDeduplication<NotifyDbContext>(builder.Configuration));
+builder.Services.AddMessaging(builder.Configuration,c => c.AddDeduplication<NotifyDbContext>(builder.Configuration));
 builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddHostedService<MessagingBackgroundService>();
 
