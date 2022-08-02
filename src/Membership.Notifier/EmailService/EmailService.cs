@@ -13,17 +13,17 @@ public class EmailService : IEmailService
 
     public async Task Send(string to, string subject, string html, string from = null)
     {
-        // create message
         var email = new MimeMessage();
-        email.From.Add(MailboxAddress.Parse(from ?? "muhammed.rafi@membership-app.me"));
+        email.From.Add(MailboxAddress.Parse(from ?? "uaekmcc@outlook.com"));
         email.To.Add(MailboxAddress.Parse(to));
         email.Subject = subject;
         email.Body = new TextPart(TextFormat.Html) { Text = html };
 
         // send email
-        using var smtp = new SmtpClient();
-        smtp.Connect("mail.privateemail.com", 465, SecureSocketOptions.SslOnConnect);
-        smtp.Authenticate("muhammed.rafi@membership-app.me", "Mem@4296326");
+        var smtp = new SmtpClient();
+        smtp.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
+        smtp.Authenticate("uaekmcc@outlook.com", "Kmcc@7425403");
+
         await smtp.SendAsync(email);
         smtp.Disconnect(true);
     }
