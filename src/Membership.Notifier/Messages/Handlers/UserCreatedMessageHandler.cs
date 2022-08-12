@@ -34,7 +34,7 @@ internal sealed class UserCreatedMessageHandler : IMessageHandler<UserCreatedMes
                 message.Otp.Substring(1, 1),
                 message.Otp.Substring(2, 1),
                 message.Otp.Substring(3, 1));
-            await _emailService.Send(message.Email, "Membership-App User Verification OTP", html);
+            await _emailService.Send(message.Email, "UAE KMCC User password", html);
             await _dbContext.UserCreated.AddAsync(userCreated);
         }
     }

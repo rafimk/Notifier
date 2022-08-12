@@ -1,5 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 
@@ -7,24 +8,33 @@ namespace Membership.Notifier.EmailService;
 
 public class EmailService : IEmailService
 {
-    public EmailService()
+    private readonly EmailOptions _emailOptions;
+    public EmailService(IOptions<EmailOptions> emailOptions)
     {
+        _emailOptions = emailOptions.Value;
     }
 
     public async Task Send(string to, string subject, string html, string from = null)
     {
-        var email = new MimeMessage();
-        email.From.Add(MailboxAddress.Parse(from ?? "uaekmcc@outlook.com"));
-        email.To.Add(MailboxAddress.Parse(to));
-        email.Subject = subject;
-        email.Body = new TextPart(TextFormat.Html) { Text = html };
+        try
+        {
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(_emailOptions.EmailFrom));
+            email.To.Add(MailboxAddress.Parse(to));
+            email.Subject = subject;
+            email.Body = new TextPart(TextFormat.Html) { Text = html };
 
-        // send email
-        var smtp = new SmtpClient();
-        smtp.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
-        smtp.Authenticate("uaekmcc@outlook.com", "Kmcc@7425403");
-
-        await smtp.SendAsync(email);
-        smtp.Disconnect(true);
+            // send email
+            var smtp = new SmtpClient();
+            smtp.Connect(_emailOptions.Smtp, _emailOptions.Port, SecureSocketOptions.StartTls);
+            smtp.Authenticate(_emailOptions.AuthenticatedUser, _emailOptions.Password);
+            await smtp.SendAsync(email);
+            smtp.Disconnect(true);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+       
     }
 }

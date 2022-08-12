@@ -1,3 +1,4 @@
+using Membership.Notifier;
 using Membership.Notifier.DAL;
 using Membership.Notifier.EmailService;
 using Membership.Notifier.Services;
@@ -5,6 +6,7 @@ using Membership.Shared;
 using Membership.Shared.Deduplication;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetRequiredSection("email-config"));
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddMessaging(builder.Configuration,c => c.AddDeduplication<NotifyDbContext>(builder.Configuration));
 builder.Services.AddPostgres(builder.Configuration);
